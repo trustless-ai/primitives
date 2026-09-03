@@ -120,7 +120,12 @@ def check(e):
         return ("PASS" if ok else "STALE" if ok is False else "CANNOT_CHECK"), f"{pf['ref']} {detail}"
     if t == "erc":
         return "INDEX", f"{pf['ref']} (verify at the ERC PR)"
-    return "SKIP", f"unknown proof type {t} (non-required)"
+    if e.get("optional") is True:
+        return "SKIP", f"explicitly declared non-required (proof type {t!r})"
+    # Unknown/unsupported proof type on a non-optional entry must NOT become a silent pass — a typo
+    # like 'contrcat' would otherwise downgrade a required check to exit-0 SKIP. Fail closed; SKIP is
+    # reserved for entries that explicitly set "optional": true.
+    return "CANNOT_CHECK", f"unsupported proof type {t!r} — not a known required check (typo? or set optional:true)"
 
 def main():
     rows, counts = [], {}

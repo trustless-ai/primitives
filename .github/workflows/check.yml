@@ -11,8 +11,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       # Authority checks: repos + conformance packages via gh (always run).
-      # On-chain checks recompute only if a trusted RPC secret is present; otherwise they SKIP
-      # (an honest skip beats trusting an arbitrary public RPC — see check.py).
+      # On-chain checks recompute via >=2 distinct-provider RPCs and must AGREE; if <2 answer they
+      # fail closed as CANNOT_CHECK (non-zero exit), never a silent pass. Works keyless (public
+      # providers corroborate); ALCHEMY_KEY adds a trusted provider. See check.py.
       - name: recompute every entry against its authority
         env:
           GH_TOKEN: ${{ github.token }}

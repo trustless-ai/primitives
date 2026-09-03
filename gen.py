@@ -122,17 +122,20 @@ for e in grp("DRAFT"):
   L.append(f"- **{e['name']}** — {e['what']} · {e['proof']['ref']}")
 L.append("\n## Detect drift — `check.py`")
 L.append("Recomputes every entry against its authority and refuses to let one source silently decide:")
-L.append("- **contract** → `eth_getCode` on **≥2 independent RPCs**. They must *agree*: both see code → "
-         "`PASS`, both see empty → `STALE`. If they **disagree** → `UNRESOLVED` (we don't pick a side — an "
-         "RPC is a resolution *transport*, not chain-state *authority*; one public node once returned a "
-         "false-empty for a live contract). Two RPCs agreeing is *corroboration*, not re-derived consensus — "
-         "full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.")
-L.append("- **repo / note** → the repository resolves (`gh api`)")
-L.append("- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`")
-L.append("- **erc** → index-only here; verify at the ERC PR")
-L.append("```\npython3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED ⚠️ SKIP 📄 INDEX\n"
-         "                   # exit 1 = drift · exit 2 = unresolved (RPCs disagreed) · exit 0 = clean\n```")
-L.append("Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.")
+L.append("- **contract** → `eth_getCode` on **≥2 distinct-provider RPCs**. They must *agree*: both see code "
+         "→ `PASS`, both empty → `STALE`. **Disagree** → `UNRESOLVED` (we don't pick a side). **<2 answer** → "
+         "`CANNOT_CHECK` — a required check that can't run fails *closed*, never a silent pass. An RPC is a "
+         "resolution *transport*, not chain-state *authority* (one public node once returned a false-empty for "
+         "a live contract). *\"Distinct provider\" is by endpoint, not a formal independence criterion — providers "
+         "may share upstreams, so agreement is corroboration bounded by that.* Corroboration is not re-derived "
+         "consensus — full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.")
+L.append("- **repo / note** → the repository resolves (`gh api`); a transport error is `CANNOT_CHECK`, not a pass.")
+L.append("- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`.")
+L.append("- **erc** → index-only here; verify at the ERC PR.")
+L.append("```\npython3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED 🚫 CANNOT_CHECK ⚠️ SKIP 📄 INDEX\n"
+         "                   # exit 1 = drift · exit 2 = unresolved/cannot-check (fail closed) · exit 0 = clean\n```")
+L.append("Required checks (contract/repo/recipe) fail closed; `SKIP` is only for genuinely non-required cases. "
+         "Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.")
 L.append(f"\n---\n{len(entries)} entries. Authority > index, always. CC0.")
 (D/"README.md").write_text("\n".join(L)+"\n")
 print("wrote primitives.json + README.md ·", len(entries), "entries")

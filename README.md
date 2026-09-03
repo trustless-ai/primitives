@@ -44,15 +44,15 @@ Each is a recomputable recipe with conformance vectors — run the suite to chec
 
 ## Detect drift — `check.py`
 Recomputes every entry against its authority and refuses to let one source silently decide:
-- **contract** → `eth_getCode` on **≥2 independent RPCs**. They must *agree*: both see code → `PASS`, both see empty → `STALE`. If they **disagree** → `UNRESOLVED` (we don't pick a side — an RPC is a resolution *transport*, not chain-state *authority*; one public node once returned a false-empty for a live contract). Two RPCs agreeing is *corroboration*, not re-derived consensus — full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.
-- **repo / note** → the repository resolves (`gh api`)
-- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`
-- **erc** → index-only here; verify at the ERC PR
+- **contract** → `eth_getCode` on **≥2 distinct-provider RPCs**. They must *agree*: both see code → `PASS`, both empty → `STALE`. **Disagree** → `UNRESOLVED` (we don't pick a side). **<2 answer** → `CANNOT_CHECK` — a required check that can't run fails *closed*, never a silent pass. An RPC is a resolution *transport*, not chain-state *authority* (one public node once returned a false-empty for a live contract). *"Distinct provider" is by endpoint, not a formal independence criterion — providers may share upstreams, so agreement is corroboration bounded by that.* Corroboration is not re-derived consensus — full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.
+- **repo / note** → the repository resolves (`gh api`); a transport error is `CANNOT_CHECK`, not a pass.
+- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`.
+- **erc** → index-only here; verify at the ERC PR.
 ```
-python3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED ⚠️ SKIP 📄 INDEX
-                   # exit 1 = drift · exit 2 = unresolved (RPCs disagreed) · exit 0 = clean
+python3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED 🚫 CANNOT_CHECK ⚠️ SKIP 📄 INDEX
+                   # exit 1 = drift · exit 2 = unresolved/cannot-check (fail closed) · exit 0 = clean
 ```
-Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.
+Required checks (contract/repo/recipe) fail closed; `SKIP` is only for genuinely non-required cases. Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.
 
 ---
 48 entries. Authority > index, always. CC0.

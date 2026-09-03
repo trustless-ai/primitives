@@ -27,10 +27,13 @@ KEY = alchemy_key()
 NET = {"mainnet": "eth-mainnet", "sepolia": "eth-sepolia"}
 # An RPC is a resolution TRANSPORT, not chain-state AUTHORITY. A single RPC's word must never
 # silently decide an entry — an untrusted node once returned "0 bytes" for a live contract. So we
-# query >=2 INDEPENDENT RPCs and only decide PASS/STALE when they AGREE; on disagreement we emit
-# UNRESOLVED rather than pick a side. Two RPCs agreeing is CORROBORATION, not independently
-# re-derived consensus — full header verification (eth_getProof / light client) is a further leg
-# the verify-layer repo carries. (Rule from Pavlo; boundary named by babyblueviper1, WG 2026-09-03.)
+# query >=2 DISTINCT-PROVIDER RPCs and only decide PASS/STALE when they AGREE; on disagreement we
+# emit UNRESOLVED rather than pick a side; if <2 answer we emit CANNOT_CHECK (fail closed, never
+# a silent pass). NOTE: "distinct provider" is by endpoint, NOT a formal independence criterion —
+# these providers may share upstream data sources, so agreement is corroboration bounded by that.
+# Two RPCs agreeing is CORROBORATION, not independently re-derived consensus — full header
+# verification (eth_getProof / light client) is a further leg the verify-layer repo carries.
+# (Rule from Pavlo; boundary named by babyblueviper1; fail-closed edge caught by Pavlo, WG 2026-09-03.)
 PUBLIC = {
     "mainnet": ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org",
                 "https://rpc.mevblocker.io", "https://1rpc.io/eth"],
@@ -81,7 +84,9 @@ def eth_getcode(addr, chain):
     n = len(answers)
     ctx = "; ".join(notes)
     if n < 2:
-        return "SKIP", f"only {n} RPC answered — need >=2 to corroborate ({ctx})"
+        # A required check that couldn't obtain enough observations must NOT pass silently
+        # (availability failure would weaken the gate). Fail closed, not open.
+        return "CANNOT_CHECK", f"only {n} RPC answered — need >=2 to corroborate ({ctx})"
     if all(answers): return "PASS", f"{n} RPCs agree: has code ({ctx})"
     if not any(answers): return "STALE", f"{n} RPCs agree: EMPTY ({ctx})"
     return "UNRESOLVED", f"RPCs DISAGREE — not deciding ({ctx})"
@@ -105,16 +110,17 @@ def check(e):
     if t == "contract":
         return eth_getcode(pf["address"], pf.get("chain") or e.get("chain"))
     if t == "recompute-recipe":
-        # ref: trustless-ai/recompute-kit/conformance/<name>
+        # ref: trustless-ai/recompute-kit/conformance/<name>. True=exists PASS, False=404 STALE,
+        # None=transport error CANNOT_CHECK (a failed lookup must not read as verified — silent-skip class).
         tail = pf["ref"].split("recompute-kit/",1)[-1]  # conformance/<name>
         ok, detail = gh_exists(f"repos/trustless-ai/recompute-kit/contents/{tail}")
-        return ("PASS" if ok else "STALE" if ok is False else "SKIP"), f"recompute-kit/{tail} {detail}"
+        return ("PASS" if ok else "STALE" if ok is False else "CANNOT_CHECK"), f"recompute-kit/{tail} {detail}"
     if t == "repo":
         ok, detail = gh_exists(ref_repo(pf["ref"]))
-        return ("PASS" if ok else "STALE" if ok is False else "SKIP"), f"{pf['ref']} {detail}"
+        return ("PASS" if ok else "STALE" if ok is False else "CANNOT_CHECK"), f"{pf['ref']} {detail}"
     if t == "erc":
         return "INDEX", f"{pf['ref']} (verify at the ERC PR)"
-    return "SKIP", f"unknown proof type {t}"
+    return "SKIP", f"unknown proof type {t} (non-required)"
 
 def main():
     rows, counts = [], {}
@@ -122,18 +128,21 @@ def main():
         state, detail = check(e)
         counts[state] = counts.get(state,0)+1
         rows.append((state, e["name"], detail))
-    icon = {"PASS":"✅","STALE":"❌","UNRESOLVED":"🟠","SKIP":"⚠️","INDEX":"📄"}
+    icon = {"PASS":"✅","STALE":"❌","UNRESOLVED":"🟠","CANNOT_CHECK":"🚫","SKIP":"⚠️","INDEX":"📄"}
     for state, name, detail in rows:
-        print(f"{icon.get(state,'?')} {state:10} {name[:44]:44} {detail}")
+        print(f"{icon.get(state,'?')} {state:12} {name[:44]:44} {detail}")
     print("\n" + "  ".join(f"{k}:{v}" for k,v in sorted(counts.items())))
-    stale = counts.get("STALE",0); unresolved = counts.get("UNRESOLVED",0)
+    stale = counts.get("STALE",0); unresolved = counts.get("UNRESOLVED",0); cannot = counts.get("CANNOT_CHECK",0)
     if stale:
         print(f"\n{stale} STALE entr{'y' if stale==1 else 'ies'} — the INDEX drifted from AUTHORITY. Fix primitives.json.")
         return 1
-    if unresolved:
-        print(f"\n{unresolved} UNRESOLVED — RPCs disagreed; not deciding. Investigate before trusting these (exit 2).")
+    if unresolved or cannot:
+        # A required check that disagreed OR couldn't run must fail closed — availability/consistency
+        # failure must never leave the success signal untouched (silent-skip class). SKIP (non-required) is fine.
+        print(f"\n{unresolved} UNRESOLVED (RPCs disagreed) + {cannot} CANNOT_CHECK (couldn't corroborate a required "
+              f"entry) — gate fails closed, investigate before trusting these (exit 2).")
         return 2
-    print("\nNo drift: every checkable entry corroborates against its authority.")
+    print("\nNo drift: every required entry corroborated against its authority.")
     return 0
 
 if __name__ == "__main__":

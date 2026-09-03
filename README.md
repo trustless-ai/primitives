@@ -43,14 +43,16 @@ Each is a recomputable recipe with conformance vectors — run the suite to chec
 - **ERC-8294 — VNI — Verifiable Network Inference.** — co-author (Tiago). · ethereum/ERCs
 
 ## Detect drift — `check.py`
-Recomputes every entry against its authority and exits non-zero on any mismatch, so a stale index is *detectable*, never load-bearing:
-- **contract** → `eth_getCode` on the named chain (needs a trusted RPC: `ALCHEMY_KEY` or `RPC_URL_MAINNET`/`RPC_URL_SEPOLIA` — we don't trust arbitrary public RPCs, one returned a false empty for a live contract)
+Recomputes every entry against its authority and refuses to let one source silently decide:
+- **contract** → `eth_getCode` on **≥2 independent RPCs**. They must *agree*: both see code → `PASS`, both see empty → `STALE`. If they **disagree** → `UNRESOLVED` (we don't pick a side — an RPC is a resolution *transport*, not chain-state *authority*; one public node once returned a false-empty for a live contract). Two RPCs agreeing is *corroboration*, not re-derived consensus — full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.
 - **repo / note** → the repository resolves (`gh api`)
 - **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`
 - **erc** → index-only here; verify at the ERC PR
 ```
-python3 check.py    # ✅ PASS / ❌ STALE / ⚠️ SKIP / 📄 INDEX ; exit 1 on drift
+python3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED ⚠️ SKIP 📄 INDEX
+                   # exit 1 = drift · exit 2 = unresolved (RPCs disagreed) · exit 0 = clean
 ```
+Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.
 
 ---
 48 entries. Authority > index, always. CC0.

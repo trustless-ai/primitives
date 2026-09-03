@@ -12,7 +12,7 @@ drifts, so CI catches a stale index before anyone trusts it.
 
 Env: ALCHEMY_KEY (or ~/.claude/alchemy_key) for eth_getCode; `gh` for GitHub authority checks.
 """
-import json, os, sys, subprocess, urllib.request, pathlib
+import json, os, sys, time, subprocess, urllib.request, pathlib
 
 HERE = pathlib.Path(__file__).parent
 REG = json.loads((HERE / "primitives.json").read_text())
@@ -25,29 +25,66 @@ def alchemy_key():
 
 KEY = alchemy_key()
 NET = {"mainnet": "eth-mainnet", "sepolia": "eth-sepolia"}
-# We do NOT fall back to arbitrary public RPCs: they lie (an untrusted node returned "0 bytes"
-# for a contract that has 3371) and a false STALE is worse than an honest SKIP. On-chain
-# authority needs a trusted RPC (ALCHEMY_KEY) — or the verify-layer eth_getProof path.
-RPC = os.environ.get("RPC_URL_MAINNET"), os.environ.get("RPC_URL_SEPOLIA")
+# An RPC is a resolution TRANSPORT, not chain-state AUTHORITY. A single RPC's word must never
+# silently decide an entry — an untrusted node once returned "0 bytes" for a live contract. So we
+# query >=2 INDEPENDENT RPCs and only decide PASS/STALE when they AGREE; on disagreement we emit
+# UNRESOLVED rather than pick a side. Two RPCs agreeing is CORROBORATION, not independently
+# re-derived consensus — full header verification (eth_getProof / light client) is a further leg
+# the verify-layer repo carries. (Rule from Pavlo; boundary named by babyblueviper1, WG 2026-09-03.)
+PUBLIC = {
+    "mainnet": ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org",
+                "https://rpc.mevblocker.io", "https://1rpc.io/eth"],
+    "sepolia": ["https://ethereum-sepolia-rpc.publicnode.com", "https://eth-sepolia.public.blastapi.io",
+                "https://sepolia.gateway.tenderly.co", "https://1rpc.io/sepolia"],
+}
 
-def _rpc_url(chain):
-    if chain == "mainnet" and RPC[0]: return RPC[0]
-    if chain == "sepolia" and RPC[1]: return RPC[1]
-    if KEY and chain in NET: return f"https://{NET[chain]}.g.alchemy.com/v2/{KEY}"
-    return None
+def _endpoints(chain):
+    eps = []
+    env = os.environ.get(f"RPC_URL_{chain.upper()}")
+    if env: eps.append(env)
+    if KEY and chain in NET: eps.append(f"https://{NET[chain]}.g.alchemy.com/v2/{KEY}")
+    eps += PUBLIC.get(chain, [])
+    seen, out = set(), []
+    for e in eps:
+        if e not in seen: seen.add(e); out.append(e)
+    return out
+
+def _label(url):
+    if "alchemy" in url: return "alchemy"
+    if "publicnode" in url: return "publicnode"
+    return url.split("//",1)[-1].split("/",1)[0][:20]
+
+def _getcode_one(url, addr, retries=2):
+    """One endpoint -> (has_code:bool | None, detail). None means no usable answer. Retries on transient fail."""
+    body = json.dumps({"jsonrpc":"2.0","id":1,"method":"eth_getCode","params":[addr,"latest"]}).encode()
+    hdr = {"Content-Type":"application/json", "User-Agent":"trustless-ai-primitives-check/1.0"}
+    for attempt in range(retries + 1):
+        req = urllib.request.Request(url, data=body, headers=hdr)
+        try:
+            r = json.loads(urllib.request.urlopen(req, timeout=20).read())
+            code = r.get("result")
+            if not isinstance(code, str): return None, "err"
+            return (code != "0x" and len(code) > 2), ("code" if code != "0x" else "empty")
+        except Exception:
+            if attempt < retries: time.sleep(0.6 * (attempt + 1)); continue
+            return None, "fail"
 
 def eth_getcode(addr, chain):
-    url = _rpc_url(chain)
-    if not url: return None, f"no trusted RPC for {chain} (set ALCHEMY_KEY or RPC_URL_{chain.upper()})"
-    body = json.dumps({"jsonrpc":"2.0","id":1,"method":"eth_getCode","params":[addr,"latest"]}).encode()
-    req = urllib.request.Request(url, data=body, headers={"Content-Type":"application/json"})
-    try:
-        r = json.loads(urllib.request.urlopen(req, timeout=20).read())
-        code = r.get("result")
-        if not isinstance(code, str): return None, f"bad result {r.get('error')}"
-        return (code != "0x" and len(code) > 2), f"{(len(code)-2)//2} bytes on {chain}"
-    except Exception as e:
-        return None, f"rpc error: {e}"
+    """(state, detail) in {PASS, STALE, UNRESOLVED, SKIP}. Queries independent RPCs, short-circuits at 2 valid."""
+    answers, notes = [], []
+    for url in _endpoints(chain):
+        ok, info = _getcode_one(url, addr)
+        notes.append(f"{_label(url)}:{info}")
+        if ok is not None:
+            answers.append(ok)
+            if len(answers) >= 2: break   # 2 independent answers is enough to decide/disagree
+    n = len(answers)
+    ctx = "; ".join(notes)
+    if n < 2:
+        return "SKIP", f"only {n} RPC answered — need >=2 to corroborate ({ctx})"
+    if all(answers): return "PASS", f"{n} RPCs agree: has code ({ctx})"
+    if not any(answers): return "STALE", f"{n} RPCs agree: EMPTY ({ctx})"
+    return "UNRESOLVED", f"RPCs DISAGREE — not deciding ({ctx})"
 
 def gh_exists(path):
     """gh api <path> → True if 200, False if 404, None on other error."""
@@ -66,8 +103,7 @@ def ref_repo(ref):  # "github.com/trustless-ai/verify-layer" -> "repos/trustless
 def check(e):
     pf = e.get("proof",{}); t = pf.get("type")
     if t == "contract":
-        ok, detail = eth_getcode(pf["address"], pf.get("chain") or e.get("chain"))
-        return ("PASS" if ok else "STALE" if ok is False else "SKIP"), detail
+        return eth_getcode(pf["address"], pf.get("chain") or e.get("chain"))
     if t == "recompute-recipe":
         # ref: trustless-ai/recompute-kit/conformance/<name>
         tail = pf["ref"].split("recompute-kit/",1)[-1]  # conformance/<name>
@@ -86,15 +122,18 @@ def main():
         state, detail = check(e)
         counts[state] = counts.get(state,0)+1
         rows.append((state, e["name"], detail))
-    icon = {"PASS":"✅","STALE":"❌","SKIP":"⚠️","INDEX":"📄"}
+    icon = {"PASS":"✅","STALE":"❌","UNRESOLVED":"🟠","SKIP":"⚠️","INDEX":"📄"}
     for state, name, detail in rows:
-        print(f"{icon.get(state,'?')} {state:5} {name[:44]:44} {detail}")
+        print(f"{icon.get(state,'?')} {state:10} {name[:44]:44} {detail}")
     print("\n" + "  ".join(f"{k}:{v}" for k,v in sorted(counts.items())))
-    stale = counts.get("STALE",0)
+    stale = counts.get("STALE",0); unresolved = counts.get("UNRESOLVED",0)
     if stale:
         print(f"\n{stale} STALE entr{'y' if stale==1 else 'ies'} — the INDEX drifted from AUTHORITY. Fix primitives.json.")
         return 1
-    print("\nNo drift: every checkable entry recomputes against its authority.")
+    if unresolved:
+        print(f"\n{unresolved} UNRESOLVED — RPCs disagreed; not deciding. Investigate before trusting these (exit 2).")
+        return 2
+    print("\nNo drift: every checkable entry corroborates against its authority.")
     return 0
 
 if __name__ == "__main__":

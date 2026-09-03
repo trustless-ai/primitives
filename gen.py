@@ -121,15 +121,18 @@ L.append("\n## 🔵 DRAFT — ERCs (in the ERC process)")
 for e in grp("DRAFT"):
   L.append(f"- **{e['name']}** — {e['what']} · {e['proof']['ref']}")
 L.append("\n## Detect drift — `check.py`")
-L.append("Recomputes every entry against its authority and exits non-zero on any mismatch, so a stale index "
-         "is *detectable*, never load-bearing:")
-L.append("- **contract** → `eth_getCode` on the named chain (needs a trusted RPC: `ALCHEMY_KEY` or "
-         "`RPC_URL_MAINNET`/`RPC_URL_SEPOLIA` — we don't trust arbitrary public RPCs, one returned a false "
-         "empty for a live contract)")
+L.append("Recomputes every entry against its authority and refuses to let one source silently decide:")
+L.append("- **contract** → `eth_getCode` on **≥2 independent RPCs**. They must *agree*: both see code → "
+         "`PASS`, both see empty → `STALE`. If they **disagree** → `UNRESOLVED` (we don't pick a side — an "
+         "RPC is a resolution *transport*, not chain-state *authority*; one public node once returned a "
+         "false-empty for a live contract). Two RPCs agreeing is *corroboration*, not re-derived consensus — "
+         "full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.")
 L.append("- **repo / note** → the repository resolves (`gh api`)")
 L.append("- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`")
 L.append("- **erc** → index-only here; verify at the ERC PR")
-L.append("```\npython3 check.py    # ✅ PASS / ❌ STALE / ⚠️ SKIP / 📄 INDEX ; exit 1 on drift\n```")
+L.append("```\npython3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED ⚠️ SKIP 📄 INDEX\n"
+         "                   # exit 1 = drift · exit 2 = unresolved (RPCs disagreed) · exit 0 = clean\n```")
+L.append("Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.")
 L.append(f"\n---\n{len(entries)} entries. Authority > index, always. CC0.")
 (D/"README.md").write_text("\n".join(L)+"\n")
 print("wrote primitives.json + README.md ·", len(entries), "entries")

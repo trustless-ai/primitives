@@ -1,0 +1,20 @@
+name: check-drift
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  recompute:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      # Authority checks: repos + conformance packages via gh (always run).
+      # On-chain checks recompute only if a trusted RPC secret is present; otherwise they SKIP
+      # (an honest skip beats trusting an arbitrary public RPC — see check.py).
+      - name: recompute every entry against its authority
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ALCHEMY_KEY: ${{ secrets.ALCHEMY_KEY }}
+        run: python3 check.py

@@ -1,6 +1,8 @@
 # trustless-ai · primitives registry
 
-What's **already built** — so nobody re-explains or reinvents it. **Don't trust this list — recompute it:** `eth_getCode` the address, open the repo, run the conformance recipe. Source of truth: `primitives.json`. Every entry verified 2026-09-03.
+What's **already built** — so nobody re-explains or reinvents it. `primitives.json` is the **index**, verified 2026-09-03.
+
+> **Index, not authority.** This registry only *points at* proofs; it is never itself the source of truth. Authority stays with the referenced **contract bytes** (`eth_getCode`), **repo state**, or **conformance package**. A mismatch means the *entry* is stale — not that the registry is truth. Run [`check.py`](check.py) (CI on every push) to recompute every entry against its authority and fail on drift. *(Rule sharpened by Pavlo in the WG.)*
 
 Status: 🟢 **LIVE** (deployed/live) · 🟡 **SHIPPED** (code + vectors, verifiable) · 📄 **PUBLISHED** (note, CC0) · 🔵 **DRAFT** (spec, in the ERC process).
 
@@ -40,5 +42,15 @@ Each is a recomputable recipe with conformance vectors — run the suite to chec
 - **ERC-8373 — Post-Quantum Anchored Key Binding.** — author. · assets/erc-8373 (ethereum/ERCs)
 - **ERC-8294 — VNI — Verifiable Network Inference.** — co-author (Tiago). · ethereum/ERCs
 
+## Detect drift — `check.py`
+Recomputes every entry against its authority and exits non-zero on any mismatch, so a stale index is *detectable*, never load-bearing:
+- **contract** → `eth_getCode` on the named chain (needs a trusted RPC: `ALCHEMY_KEY` or `RPC_URL_MAINNET`/`RPC_URL_SEPOLIA` — we don't trust arbitrary public RPCs, one returned a false empty for a live contract)
+- **repo / note** → the repository resolves (`gh api`)
+- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`
+- **erc** → index-only here; verify at the ERC PR
+```
+python3 check.py    # ✅ PASS / ❌ STALE / ⚠️ SKIP / 📄 INDEX ; exit 1 on drift
+```
+
 ---
-48 entries. Re-verify: on-chain = `eth_getCode`; recipes = recompute-kit conformance; repos = open them. CC0.
+48 entries. Authority > index, always. CC0.

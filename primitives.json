@@ -1,7 +1,7 @@
 {
   "schema": "trustless-ai.primitives.v0",
   "updated": "2026-09-03",
-  "note": "Capability registry. Every entry carries its proof — don't trust the list, recompute it (eth_getCode the address, open the repo, run the conformance recipe). Status: LIVE=deployed/live, SHIPPED=code+vectors verifiable, PUBLISHED=note (CC0), DRAFT=spec in the ERC process.",
+  "note": "Discovery/INDEX surface — NOT a source of truth. Authority is the referenced contract bytes (eth_getCode), repo state, or conformance package; this file only points at them. A mismatch means the ENTRY is stale, not that the registry is truth — run check.py to detect drift. Status: LIVE=deployed/live, SHIPPED=code+vectors verifiable, PUBLISHED=note (CC0), DRAFT=spec in the ERC process.",
   "count": 48,
   "primitives": [
     {

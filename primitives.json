@@ -584,26 +584,26 @@
     },
     {
       "id": "surface:verify-showcase",
-      "name": "demo.verticecriativo.pt/verify",
+      "name": "ai.verticecriativo.pt/verify",
       "what": "The /verify four-surface recompute showcase (WYRIWE L1-L3 + EIP-712 L4 + on-chain anchor).",
       "status": "LIVE",
       "proof": {
         "type": "surface",
-        "url": "https://demo.verticecriativo.pt/verify"
+        "url": "https://ai.verticecriativo.pt/verify"
       },
-      "verify": "GET https://demo.verticecriativo.pt/verify -> 200; recompute in-browser",
+      "verify": "GET https://ai.verticecriativo.pt/verify -> 200; recompute in-browser",
       "verified_at": "2026-09-03"
     },
     {
       "id": "surface:review",
-      "name": "demo.verticecriativo.pt/review",
+      "name": "ai.verticecriativo.pt/review",
       "what": "invinoveritas /review verdict — recompute a signed review in-browser (NIP-01 + BIP-340).",
       "status": "LIVE",
       "proof": {
         "type": "surface",
-        "url": "https://demo.verticecriativo.pt/review"
+        "url": "https://ai.verticecriativo.pt/review"
       },
-      "verify": "GET https://demo.verticecriativo.pt/review -> 200; recompute in-browser",
+      "verify": "GET https://ai.verticecriativo.pt/review -> 200; recompute in-browser",
       "verified_at": "2026-09-03"
     },
     {

@@ -20,8 +20,8 @@ Status: 🟢 **LIVE** (deployed/live) · 🟡 **SHIPPED** (code + vectors, verif
 
 ## 🟢 LIVE — surfaces (hit them, recompute)
 - **gateway.verticecriativo.pt/agent/verify** — Public no-auth attestation verify — hand it a hash, get the attested turn back. · https://gateway.verticecriativo.pt/agent/verify/0x096e9df2fccbaf49525a22d3537670ec83746157846f0c25509a6483fe1d0a91
-- **demo.verticecriativo.pt/verify** — The /verify four-surface recompute showcase (WYRIWE L1-L3 + EIP-712 L4 + on-chain anchor). · https://demo.verticecriativo.pt/verify
-- **demo.verticecriativo.pt/review** — invinoveritas /review verdict — recompute a signed review in-browser (NIP-01 + BIP-340). · https://demo.verticecriativo.pt/review
+- **ai.verticecriativo.pt/verify** — The /verify four-surface recompute showcase (WYRIWE L1-L3 + EIP-712 L4 + on-chain anchor). · https://ai.verticecriativo.pt/verify
+- **ai.verticecriativo.pt/review** — invinoveritas /review verdict — recompute a signed review in-browser (NIP-01 + BIP-340). · https://ai.verticecriativo.pt/review
 - **ai.verticecriativo.pt/quantum** — Post-quantum key-binding recompute (SLH-DSA / ML-DSA), served live. · https://ai.verticecriativo.pt/quantum
 - **cross-reference-console (trustless-ai.eth)** — Multi-operator mutual-recompute matrix — LIVE on trustless-ai.eth. · https://trustless-ai.eth.limo/
 

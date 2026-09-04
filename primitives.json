@@ -90,7 +90,7 @@
     },
     {
       "id": "pq-binding-anchor",
-      "name": "PqBindingAnchor — wallet PQ binding (Sepolia)",
+      "name": "PqBindingAnchor — wallet PQ binding",
       "what": "Non-custodial WALLET PQ key binding, first-write-immutable — testnet rail, mainnet after testing. NOTE: the AGENT PQ binding is separate and LIVE — KYA-L4 (SLH-DSA + ML-DSA) attestor binding anchored on mainnet via TruthAnchor 0x1e2A118a (tx 0x469655a0…); 29 agents epoch-anchored on Base Sepolia; recompute at ai.verticecriativo.pt/quantum.",
       "status": "LIVE",
       "chain": "sepolia",

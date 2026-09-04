@@ -13,7 +13,7 @@ Status: 🟢 **LIVE** (deployed/live) · 🟡 **SHIPPED** (code + vectors, verif
 - **AttestationIndex — ERC-8281-compatible (ccip-router)** — ERC-8281 OCP-compatible commitment store (signerOf/commitmentOf) — the ccip-router mesh anchor. · `0xc7BCCD785Fb994e570d0ca10D0F7899d87C82210` (mainnet)
 - **GenesisAgentRegistry (production)** — Mint-your-agent registry — the live deployment used by ai.verticecriativo.pt. · `0x8b5AF3A59f81c7e16617E8Eb824BC6FfB792A2C3` (mainnet)
 - **GenesisAgentRegistry (reference)** — Second mainnet deployment, Sourcify-verified — the genesis-self-source example in agent-contracts-examples. · `0xe91934aB1f6A40cc1Bb4cD530FEFF56dFE524963` (mainnet)
-- **PqBindingAnchor — wallet PQ binding (Sepolia)** — Non-custodial WALLET PQ key binding, first-write-immutable — testnet rail, mainnet after testing. NOTE: the AGENT PQ binding is separate and LIVE — KYA-L4 (SLH-DSA + ML-DSA) attestor binding anchored on mainnet via TruthAnchor 0x1e2A118a (tx 0x469655a0…); 29 agents epoch-anchored on Base Sepolia; recompute at ai.verticecriativo.pt/quantum. · `0x0E6A09577f22A38239d4916C092E149BfB4AB57d` (sepolia)
+- **PqBindingAnchor — wallet PQ binding** — Non-custodial WALLET PQ key binding, first-write-immutable — testnet rail, mainnet after testing. NOTE: the AGENT PQ binding is separate and LIVE — KYA-L4 (SLH-DSA + ML-DSA) attestor binding anchored on mainnet via TruthAnchor 0x1e2A118a (tx 0x469655a0…); 29 agents epoch-anchored on Base Sepolia; recompute at ai.verticecriativo.pt/quantum. · `0x0E6A09577f22A38239d4916C092E149BfB4AB57d` (sepolia)
 
 ## 🟢 LIVE — services
 - **cross-reference-console** — multi-operator mutual-recompute surface — LIVE at trustless-ai.eth. · github.com/trustless-ai/cross-reference-console

@@ -23,7 +23,7 @@ live_onchain = [
   ("genesis-agent-registry-ref","GenesisAgentRegistry (reference)",
    "Second mainnet deployment, Sourcify-verified — the genesis-self-source example in agent-contracts-examples.",
    "mainnet","0xe91934aB1f6A40cc1Bb4cD530FEFF56dFE524963"),
-  ("pq-binding-anchor","PqBindingAnchor — wallet PQ binding (Sepolia)",
+  ("pq-binding-anchor","PqBindingAnchor — wallet PQ binding",
    "Non-custodial WALLET PQ key binding, first-write-immutable — testnet rail, mainnet after testing. "
    "NOTE: the AGENT PQ binding is separate and LIVE — KYA-L4 (SLH-DSA + ML-DSA) attestor binding anchored on "
    "mainnet via TruthAnchor 0x1e2A118a (tx 0x469655a0…); 29 agents epoch-anchored on Base Sepolia; recompute at "

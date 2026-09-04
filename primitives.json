@@ -2,7 +2,7 @@
   "schema": "trustless-ai.primitives.v0",
   "updated": "2026-09-03",
   "note": "Discovery/INDEX surface — NOT a source of truth. Authority is the referenced contract bytes (eth_getCode), repo state, or conformance package; this file only points at them. A mismatch means the ENTRY is stale, not that the registry is truth — run check.py to detect drift. Status: LIVE=deployed/live, SHIPPED=code+vectors verifiable, PUBLISHED=note (CC0), DRAFT=spec in the ERC process.",
-  "count": 49,
+  "count": 50,
   "primitives": [
     {
       "id": "agent-market-escrow",
@@ -62,8 +62,8 @@
     },
     {
       "id": "genesis-agent-registry",
-      "name": "GenesisAgentRegistry",
-      "what": "Mint-your-agent registry (used by ai.verticecriativo.pt).",
+      "name": "GenesisAgentRegistry (production)",
+      "what": "Mint-your-agent registry — the live deployment used by ai.verticecriativo.pt.",
       "status": "LIVE",
       "chain": "mainnet",
       "proof": {
@@ -72,6 +72,20 @@
         "chain": "mainnet"
       },
       "verify": "eth_getCode 0x8b5AF3A59f81c7e16617E8Eb824BC6FfB792A2C3 on mainnet (non-empty)",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "genesis-agent-registry-ref",
+      "name": "GenesisAgentRegistry (reference)",
+      "what": "Second mainnet deployment, Sourcify-verified — the genesis-self-source example in agent-contracts-examples.",
+      "status": "LIVE",
+      "chain": "mainnet",
+      "proof": {
+        "type": "contract",
+        "address": "0xe91934aB1f6A40cc1Bb4cD530FEFF56dFE524963",
+        "chain": "mainnet"
+      },
+      "verify": "eth_getCode 0xe91934aB1f6A40cc1Bb4cD530FEFF56dFE524963 on mainnet (non-empty)",
       "verified_at": "2026-09-03"
     },
     {

@@ -17,8 +17,12 @@ live_onchain = [
   ("attestation-index","AttestationIndex — ERC-8281-compatible (ccip-router)",
    "ERC-8281 OCP-compatible commitment store (signerOf/commitmentOf) — the ccip-router mesh anchor.",
    "mainnet","0xc7BCCD785Fb994e570d0ca10D0F7899d87C82210"),
-  ("genesis-agent-registry","GenesisAgentRegistry","Mint-your-agent registry (used by ai.verticecriativo.pt).",
+  ("genesis-agent-registry","GenesisAgentRegistry (production)",
+   "Mint-your-agent registry — the live deployment used by ai.verticecriativo.pt.",
    "mainnet","0x8b5AF3A59f81c7e16617E8Eb824BC6FfB792A2C3"),
+  ("genesis-agent-registry-ref","GenesisAgentRegistry (reference)",
+   "Second mainnet deployment, Sourcify-verified — the genesis-self-source example in agent-contracts-examples.",
+   "mainnet","0xe91934aB1f6A40cc1Bb4cD530FEFF56dFE524963"),
   ("pq-binding-anchor","PqBindingAnchor (wallet PQ key binding)","First-write-immutable bind of a PQ key to a wallet.",
    "sepolia","0x0E6A09577f22A38239d4916C092E149BfB4AB57d"),
 ]

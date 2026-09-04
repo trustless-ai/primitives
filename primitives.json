@@ -2,7 +2,7 @@
   "schema": "trustless-ai.primitives.v0",
   "updated": "2026-09-03",
   "note": "Discovery/INDEX surface — NOT a source of truth. Authority is the referenced contract bytes (eth_getCode), repo state, or conformance package; this file only points at them. A mismatch means the ENTRY is stale, not that the registry is truth — run check.py to detect drift. Status: LIVE=deployed/live, SHIPPED=code+vectors verifiable, PUBLISHED=note (CC0), DRAFT=spec in the ERC process.",
-  "count": 48,
+  "count": 49,
   "primitives": [
     {
       "id": "agent-market-escrow",
@@ -34,8 +34,8 @@
     },
     {
       "id": "truth-anchor",
-      "name": "TruthAnchor (verify showcase L3)",
-      "what": "On-chain anchor for the /verify showcase proof.",
+      "name": "TruthAnchor — ERC-8281 OCP (ours)",
+      "what": "Our ERC-8281 commitment anchor: record(digest)->Recorded; /verify showcase L3 reads it. Distinct from Vincent Wu's ERC-8263 TruthAnchorV1 (a separate primitive).",
       "status": "LIVE",
       "chain": "mainnet",
       "proof": {
@@ -44,6 +44,20 @@
         "chain": "mainnet"
       },
       "verify": "eth_getCode 0x1e2A118a2bf1C240aE6fDe187c07f905D360f094 on mainnet (non-empty)",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "attestation-index",
+      "name": "AttestationIndex — ERC-8281-compatible (ccip-router)",
+      "what": "ERC-8281 OCP-compatible commitment store (signerOf/commitmentOf) — the ccip-router mesh anchor.",
+      "status": "LIVE",
+      "chain": "mainnet",
+      "proof": {
+        "type": "contract",
+        "address": "0xc7BCCD785Fb994e570d0ca10D0F7899d87C82210",
+        "chain": "mainnet"
+      },
+      "verify": "eth_getCode 0xc7BCCD785Fb994e570d0ca10D0F7899d87C82210 on mainnet (non-empty)",
       "verified_at": "2026-09-03"
     },
     {

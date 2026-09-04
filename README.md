@@ -9,7 +9,8 @@ Status: 🟢 **LIVE** (deployed/live) · 🟡 **SHIPPED** (code + vectors, verif
 ## 🟢 LIVE — on-chain (eth_getCode-verified)
 - **AgentMarketEscrow** — On-chain escrow for agent services — list, buy, settle. · `0x82feaa28527adddfba29b5587c7b58d3e1e2c739` (mainnet)
 - **MCPEntitlementRegistry** — Buy an MCP capability that's carried by the agent NFT. · `0x6374556D1c19924584644BD48ebecF444e43Ed9F` (mainnet)
-- **TruthAnchor (verify showcase L3)** — On-chain anchor for the /verify showcase proof. · `0x1e2A118a2bf1C240aE6fDe187c07f905D360f094` (mainnet)
+- **TruthAnchor — ERC-8281 OCP (ours)** — Our ERC-8281 commitment anchor: record(digest)->Recorded; /verify showcase L3 reads it. Distinct from Vincent Wu's ERC-8263 TruthAnchorV1 (a separate primitive). · `0x1e2A118a2bf1C240aE6fDe187c07f905D360f094` (mainnet)
+- **AttestationIndex — ERC-8281-compatible (ccip-router)** — ERC-8281 OCP-compatible commitment store (signerOf/commitmentOf) — the ccip-router mesh anchor. · `0xc7BCCD785Fb994e570d0ca10D0F7899d87C82210` (mainnet)
 - **GenesisAgentRegistry** — Mint-your-agent registry (used by ai.verticecriativo.pt). · `0x8b5AF3A59f81c7e16617E8Eb824BC6FfB792A2C3` (mainnet)
 - **PqBindingAnchor (wallet PQ key binding)** — First-write-immutable bind of a PQ key to a wallet. · `0x0E6A09577f22A38239d4916C092E149BfB4AB57d` (sepolia)
 
@@ -55,4 +56,4 @@ python3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED 🚫 CANNOT_CHECK ⚠️
 Required checks (contract/repo/recipe) fail closed; `SKIP` is only for genuinely non-required cases. Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.
 
 ---
-48 entries. Authority > index, always. CC0.
+49 entries. Authority > index, always. CC0.

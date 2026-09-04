@@ -18,6 +18,13 @@ Status: 🟢 **LIVE** (deployed/live) · 🟡 **SHIPPED** (code + vectors, verif
 ## 🟢 LIVE — services
 - **cross-reference-console** — multi-operator mutual-recompute surface — LIVE at trustless-ai.eth. · github.com/trustless-ai/cross-reference-console
 
+## 🟢 LIVE — surfaces (hit them, recompute)
+- **gateway.verticecriativo.pt/agent/verify** — Public no-auth attestation verify — hand it a hash, get the attested turn back. · https://gateway.verticecriativo.pt/agent/verify/0x096e9df2fccbaf49525a22d3537670ec83746157846f0c25509a6483fe1d0a91
+- **demo.verticecriativo.pt/verify** — The /verify four-surface recompute showcase (WYRIWE L1-L3 + EIP-712 L4 + on-chain anchor). · https://demo.verticecriativo.pt/verify
+- **demo.verticecriativo.pt/review** — invinoveritas /review verdict — recompute a signed review in-browser (NIP-01 + BIP-340). · https://demo.verticecriativo.pt/review
+- **ai.verticecriativo.pt/quantum** — Post-quantum key-binding recompute (SLH-DSA / ML-DSA), served live. · https://ai.verticecriativo.pt/quantum
+- **cross-reference-console (trustless-ai.eth)** — Multi-operator mutual-recompute matrix — LIVE on trustless-ai.eth. · https://trustless-ai.eth.limo/
+
 ## 🟡 SHIPPED — recompute primitives (26) · `recompute-kit/conformance/`
 Each is a recomputable recipe with conformance vectors — run the suite to check any of them:
 `pq-key-binding-v0`, `pq-key-binding-v1`, `pq-key-binding-v1-profile`, `pq-recovery-classes-v0`, `captured-admission-v0`, `captured-admission-v0-review-profile`, `captured-admission-v0-review-profile-deadline`, `companion-envelope-v0`, `convention-hash-v0`, `provenance-anchor-v0`, `storage-root-v0`, `encode-json-utf8-lf-v0`, `erc-8309-envelope-v0`, `erc8275-win-rate-bps-v0`, `communication-chain-v0`, `chronicle-checkpoint-continuity-v0`, `crc-claim-v0`, `aggregate-budget-v0`, `dex-calldata-v0`, `ens-write-v0`, `id-write-v0`, `nft-fulfill-v0`, `deils-leg2-reveal-v0`, `tee-inference-v0`, `tee-inference-enclave-v0`, `serializer-bindings`
@@ -57,4 +64,4 @@ python3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED 🚫 CANNOT_CHECK ⚠️
 Required checks (contract/repo/recipe) fail closed; `SKIP` is only for genuinely non-required cases. Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.
 
 ---
-50 entries. Authority > index, always. CC0.
+55 entries. Authority > index, always. CC0.

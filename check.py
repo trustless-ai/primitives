@@ -118,6 +118,14 @@ def check(e):
     if t == "repo":
         ok, detail = gh_exists(ref_repo(pf["ref"]))
         return ("PASS" if ok else "STALE" if ok is False else "CANNOT_CHECK"), f"{pf['ref']} {detail}"
+    if t == "surface":
+        url = pf["url"]
+        hdr = {"User-Agent":"trustless-ai-primitives-check/1.0"}
+        try:
+            code = urllib.request.urlopen(urllib.request.Request(url, headers=hdr), timeout=15).getcode()
+            return ("PASS" if code == 200 else "STALE"), f"GET {url} -> {code}"
+        except Exception as e:
+            return "CANNOT_CHECK", f"GET {url} failed: {str(e)[:60]}"
     if t == "erc":
         return "INDEX", f"{pf['ref']} (verify at the ERC PR)"
     if e.get("optional") is True:

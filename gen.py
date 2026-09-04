@@ -56,6 +56,25 @@ notes = [
   ("composed-attestation-note","four independent commitments over one event — the seam rules."),
 ]
 
+# Live, user-facing surfaces anyone can hit and recompute (endpoints/UIs), verified 200.
+surfaces = [
+  ("surface:agent-verify","gateway.verticecriativo.pt/agent/verify",
+   "Public no-auth attestation verify — hand it a hash, get the attested turn back.",
+   "https://gateway.verticecriativo.pt/agent/verify/0x096e9df2fccbaf49525a22d3537670ec83746157846f0c25509a6483fe1d0a91"),
+  ("surface:verify-showcase","demo.verticecriativo.pt/verify",
+   "The /verify four-surface recompute showcase (WYRIWE L1-L3 + EIP-712 L4 + on-chain anchor).",
+   "https://demo.verticecriativo.pt/verify"),
+  ("surface:review","demo.verticecriativo.pt/review",
+   "invinoveritas /review verdict — recompute a signed review in-browser (NIP-01 + BIP-340).",
+   "https://demo.verticecriativo.pt/review"),
+  ("surface:quantum","ai.verticecriativo.pt/quantum",
+   "Post-quantum key-binding recompute (SLH-DSA / ML-DSA), served live.",
+   "https://ai.verticecriativo.pt/quantum"),
+  ("surface:console","cross-reference-console (trustless-ai.eth)",
+   "Multi-operator mutual-recompute matrix — LIVE on trustless-ai.eth.",
+   "https://trustless-ai.eth.limo/"),
+]
+
 # ERCs we author / co-author / co-maintain (attribution kept precise).
 ercs = [
   ("ERC-8299","WYRIWE — what-you-run-is-what-you-explain (input provenance).","co-author (TMerlini+Vincent+Fede+Jimmy+Damon)","ethereum/ERCs#1810"),
@@ -81,6 +100,9 @@ for r,desc in repos:
 for n,desc in notes:
   entries.append({"id":f"note:{n}","name":n,"what":desc,"status":"PUBLISHED",
     "proof":{"type":"repo","ref":f"github.com/trustless-ai/{n}"},"verify":"read it (CC0)","verified_at":DATE})
+for id_,name,what,url in surfaces:
+  entries.append({"id":id_,"name":name,"what":what,"status":"LIVE",
+    "proof":{"type":"surface","url":url},"verify":f"GET {url} -> 200; recompute in-browser","verified_at":DATE})
 for num,name,role,ref in ercs:
   entries.append({"id":num.lower(),"name":f"{num} — {name}","what":f"{role}.","status":"DRAFT",
     "proof":{"type":"erc","ref":ref},"verify":"open the ERC PR / assets","verified_at":DATE})
@@ -116,6 +138,10 @@ L.append("\n## 🟢 LIVE — services")
 for e in grp("LIVE"):
   if e["proof"]["type"]=="repo":
     L.append(f"- **{e['name']}** — {e['what']} · {e['proof']['ref']}")
+L.append("\n## 🟢 LIVE — surfaces (hit them, recompute)")
+for e in grp("LIVE"):
+  if e["proof"]["type"]=="surface":
+    L.append(f"- **{e['name']}** — {e['what']} · {e['proof']['url']}")
 L.append(f"\n## 🟡 SHIPPED — recompute primitives ({len(recompute_primitives)}) · `recompute-kit/conformance/`")
 L.append("Each is a recomputable recipe with conformance vectors — run the suite to check any of them:")
 L.append("`" + "`, `".join(recompute_primitives) + "`")

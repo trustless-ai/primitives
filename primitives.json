@@ -2,7 +2,7 @@
   "schema": "trustless-ai.primitives.v0",
   "updated": "2026-09-03",
   "note": "Discovery/INDEX surface — NOT a source of truth. Authority is the referenced contract bytes (eth_getCode), repo state, or conformance package; this file only points at them. A mismatch means the ENTRY is stale, not that the registry is truth — run check.py to detect drift. Status: LIVE=deployed/live, SHIPPED=code+vectors verifiable, PUBLISHED=note (CC0), DRAFT=spec in the ERC process.",
-  "count": 50,
+  "count": 55,
   "primitives": [
     {
       "id": "agent-market-escrow",
@@ -568,6 +568,66 @@
         "ref": "github.com/trustless-ai/composed-attestation-note"
       },
       "verify": "read it (CC0)",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "surface:agent-verify",
+      "name": "gateway.verticecriativo.pt/agent/verify",
+      "what": "Public no-auth attestation verify — hand it a hash, get the attested turn back.",
+      "status": "LIVE",
+      "proof": {
+        "type": "surface",
+        "url": "https://gateway.verticecriativo.pt/agent/verify/0x096e9df2fccbaf49525a22d3537670ec83746157846f0c25509a6483fe1d0a91"
+      },
+      "verify": "GET https://gateway.verticecriativo.pt/agent/verify/0x096e9df2fccbaf49525a22d3537670ec83746157846f0c25509a6483fe1d0a91 -> 200; recompute in-browser",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "surface:verify-showcase",
+      "name": "demo.verticecriativo.pt/verify",
+      "what": "The /verify four-surface recompute showcase (WYRIWE L1-L3 + EIP-712 L4 + on-chain anchor).",
+      "status": "LIVE",
+      "proof": {
+        "type": "surface",
+        "url": "https://demo.verticecriativo.pt/verify"
+      },
+      "verify": "GET https://demo.verticecriativo.pt/verify -> 200; recompute in-browser",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "surface:review",
+      "name": "demo.verticecriativo.pt/review",
+      "what": "invinoveritas /review verdict — recompute a signed review in-browser (NIP-01 + BIP-340).",
+      "status": "LIVE",
+      "proof": {
+        "type": "surface",
+        "url": "https://demo.verticecriativo.pt/review"
+      },
+      "verify": "GET https://demo.verticecriativo.pt/review -> 200; recompute in-browser",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "surface:quantum",
+      "name": "ai.verticecriativo.pt/quantum",
+      "what": "Post-quantum key-binding recompute (SLH-DSA / ML-DSA), served live.",
+      "status": "LIVE",
+      "proof": {
+        "type": "surface",
+        "url": "https://ai.verticecriativo.pt/quantum"
+      },
+      "verify": "GET https://ai.verticecriativo.pt/quantum -> 200; recompute in-browser",
+      "verified_at": "2026-09-03"
+    },
+    {
+      "id": "surface:console",
+      "name": "cross-reference-console (trustless-ai.eth)",
+      "what": "Multi-operator mutual-recompute matrix — LIVE on trustless-ai.eth.",
+      "status": "LIVE",
+      "proof": {
+        "type": "surface",
+        "url": "https://trustless-ai.eth.limo/"
+      },
+      "verify": "GET https://trustless-ai.eth.limo/ -> 200; recompute in-browser",
       "verified_at": "2026-09-03"
     },
     {

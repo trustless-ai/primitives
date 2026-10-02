@@ -26,7 +26,7 @@ Status: 🟢 **LIVE** (deployed/live) · 🟡 **SHIPPED** (code + vectors, verif
 - **cross-reference-console (trustless-ai.eth)** — Multi-operator mutual-recompute matrix — LIVE on trustless-ai.eth. · https://trustless-ai.eth.limo/
 
 ## 🟡 SHIPPED — recompute primitives (26) · `recompute-kit/conformance/`
-Each is a recomputable recipe with conformance vectors — run the suite to check any of them:
+Each is a recomputable package with vectors. `SHIPPED` retains its meaning above; it does not promise a central-runner declaration or a passing run. Inspect the package specification and vectors. When `suite.json` is present, follow its declared checks and inspect the actual per-suite result; live exclusions can apply. Without `suite.json`, no central-runner verification is declared:
 `pq-key-binding-v0`, `pq-key-binding-v1`, `pq-key-binding-v1-profile`, `pq-recovery-classes-v0`, `captured-admission-v0`, `captured-admission-v0-review-profile`, `captured-admission-v0-review-profile-deadline`, `companion-envelope-v0`, `convention-hash-v0`, `provenance-anchor-v0`, `storage-root-v0`, `encode-json-utf8-lf-v0`, `erc-8309-envelope-v0`, `erc8275-win-rate-bps-v0`, `communication-chain-v0`, `chronicle-checkpoint-continuity-v0`, `crc-claim-v0`, `aggregate-budget-v0`, `dex-calldata-v0`, `ens-write-v0`, `id-write-v0`, `nft-fulfill-v0`, `deils-leg2-reveal-v0`, `tee-inference-v0`, `tee-inference-enclave-v0`, `serializer-bindings`
 
 ## 🟡 SHIPPED — tools & components
@@ -55,13 +55,17 @@ Each is a recomputable recipe with conformance vectors — run the suite to chec
 Recomputes every entry against its authority and refuses to let one source silently decide:
 - **contract** → `eth_getCode` on **≥2 distinct-provider RPCs**. They must *agree*: both see code → `PASS`, both empty → `STALE`. **Disagree** → `UNRESOLVED` (we don't pick a side). **<2 answer** → `CANNOT_CHECK` — a required check that can't run fails *closed*, never a silent pass. An RPC is a resolution *transport*, not chain-state *authority* (one public node once returned a false-empty for a live contract). *"Distinct provider" is by endpoint, not a formal independence criterion — providers may share upstreams, so agreement is corroboration bounded by that.* Corroboration is not re-derived consensus — full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.
 - **repo / note** → the repository resolves (`gh api`); a transport error is `CANNOT_CHECK`, not a pass.
-- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`.
+- **recompute-recipe** → one GitHub directory listing distinguishes `RUNNER_DECLARED` (`suite.json` file present) from `PACKAGE_PRESENT` (package present, no `suite.json`). Neither means a suite passed or was executed. Missing package → `STALE`; transport/API failure or unusable listing → `CANNOT_CHECK`. `uncovered.json` is not a checker dependency.
 - **erc** → index-only here; verify at the ERC PR.
 ```
-python3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED 🚫 CANNOT_CHECK ⚠️ SKIP 📄 INDEX
+python3 check.py   # PASS / RUNNER_DECLARED / PACKAGE_PRESENT / STALE / UNRESOLVED / CANNOT_CHECK / SKIP / INDEX
                    # exit 1 = drift · exit 2 = unresolved/cannot-check (fail closed) · exit 0 = clean
 ```
 Required checks (contract/repo/recipe) fail closed; `SKIP` is only for genuinely non-required cases. Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.
+
+Recipe observations do not change the registry lifecycle status `SHIPPED`. Exit 0 means the required registry observations completed without drift; it is not a conformance verdict. `RUNNER_DECLARED` only establishes manifest-file presence, not manifest validity, executable availability, pin validity, runner scheduling or semantic correctness. `PACKAGE_PRESENT` establishes neither those facts nor code/vector correctness. Run conformance separately in recompute-kit and retain NOT RUN / live-skip outcomes.
+
+Offline regression tests: `python3 -m unittest -v test_check.py`. They mock GitHub/RPC access and exercise the registry exit codes.
 
 ---
 55 entries. Authority > index, always. CC0.

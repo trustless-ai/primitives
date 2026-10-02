@@ -4,7 +4,7 @@
 primitives.json is the discovery/index surface — NOT a source of truth. Authority is:
   • contract        → the on-chain bytecode (eth_getCode on the named chain)
   • repo / note     → the repository state (github.com/trustless-ai/<name>)
-  • recompute-recipe→ the conformance package (recompute-kit/conformance/<name>)
+  • recompute-recipe→ package/runner-declaration presence, NOT a conformance verdict
   • erc             → the ERC PR / assets (index-only here; author verifies at the PR)
 
 A mismatch means the ENTRY is stale, not that the registry is truth. Exit 1 if any entry
@@ -101,6 +101,44 @@ def gh_exists(path):
     except Exception as e:
         return None, str(e)[:60]
 
+def recompute_recipe(ref):
+    """Observe one package listing: presence != runner declaration != conformance PASS.
+
+    No uncovered.json dependency and no suite execution/manifest-contract validation.
+    One Contents API response supplies both presence facts without two moving lookups.
+    """
+    tail = ref.split("recompute-kit/", 1)[-1]
+    label = f"recompute-kit/{tail}"
+    try:
+        p = subprocess.run(["gh", "api", f"repos/trustless-ai/recompute-kit/contents/{tail}"],
+                           capture_output=True, text=True, timeout=25)
+    except Exception as e:
+        return "CANNOT_CHECK", f"{label} lookup failed: {str(e)[:60]}"
+    if p.returncode != 0:
+        if "(HTTP 404)" in (p.stderr or ""):
+            return "STALE", f"{label} package missing (404)"
+        return "CANNOT_CHECK", f"{label} lookup failed: {(p.stderr or '').strip()[:60]}"
+    try:
+        items = json.loads(p.stdout)
+    except (ValueError, TypeError):
+        return "CANNOT_CHECK", f"{label} invalid Contents API JSON"
+    if not isinstance(items, list) or any(
+        not isinstance(item, dict) or not isinstance(item.get("name"), str) or not item["name"]
+        or item.get("type") not in ("file", "dir", "symlink", "submodule")
+        for item in items
+    ):
+        return "CANNOT_CHECK", f"{label} invalid package directory listing"
+    names = [item["name"] for item in items]
+    if len(names) != len(set(names)):
+        return "CANNOT_CHECK", f"{label} ambiguous package directory listing"
+    manifest = next((item for item in items if item["name"] == "suite.json"), None)
+    if manifest is not None:
+        if manifest["type"] != "file":
+            return "CANNOT_CHECK", f"{label} suite.json is not a regular file"
+        return "RUNNER_DECLARED", f"{label} package present; suite.json present; conformance not checked"
+    return "PACKAGE_PRESENT", f"{label} package present; no suite.json / no runner declaration; conformance not checked"
+
+
 def ref_repo(ref):  # "github.com/trustless-ai/verify-layer" -> "repos/trustless-ai/verify-layer"
     tail = ref.split("github.com/",1)[-1].strip("/")
     return "repos/" + tail
@@ -110,11 +148,7 @@ def check(e):
     if t == "contract":
         return eth_getcode(pf["address"], pf.get("chain") or e.get("chain"))
     if t == "recompute-recipe":
-        # ref: trustless-ai/recompute-kit/conformance/<name>. True=exists PASS, False=404 STALE,
-        # None=transport error CANNOT_CHECK (a failed lookup must not read as verified — silent-skip class).
-        tail = pf["ref"].split("recompute-kit/",1)[-1]  # conformance/<name>
-        ok, detail = gh_exists(f"repos/trustless-ai/recompute-kit/contents/{tail}")
-        return ("PASS" if ok else "STALE" if ok is False else "CANNOT_CHECK"), f"recompute-kit/{tail} {detail}"
+        return recompute_recipe(pf["ref"])
     if t == "repo":
         ok, detail = gh_exists(ref_repo(pf["ref"]))
         return ("PASS" if ok else "STALE" if ok is False else "CANNOT_CHECK"), f"{pf['ref']} {detail}"
@@ -141,7 +175,8 @@ def main():
         state, detail = check(e)
         counts[state] = counts.get(state,0)+1
         rows.append((state, e["name"], detail))
-    icon = {"PASS":"✅","STALE":"❌","UNRESOLVED":"🟠","CANNOT_CHECK":"🚫","SKIP":"⚠️","INDEX":"📄"}
+    icon = {"PASS":"✅","STALE":"❌","UNRESOLVED":"🟠","CANNOT_CHECK":"🚫","SKIP":"⚠️","INDEX":"📄",
+            "RUNNER_DECLARED":"📋","PACKAGE_PRESENT":"📦"}
     for state, name, detail in rows:
         print(f"{icon.get(state,'?')} {state:12} {name[:44]:44} {detail}")
     print("\n" + "  ".join(f"{k}:{v}" for k,v in sorted(counts.items())))
@@ -155,7 +190,8 @@ def main():
         print(f"\n{unresolved} UNRESOLVED (RPCs disagreed) + {cannot} CANNOT_CHECK (couldn't corroborate a required "
               f"entry) — gate fails closed, investigate before trusting these (exit 2).")
         return 2
-    print("\nNo drift: every required entry corroborated against its authority.")
+    print("\nNo registry drift: every required entry corroborated against its authority. "
+          "Recipe results report package/manifest presence only, not conformance PASS.")
     return 0
 
 if __name__ == "__main__":

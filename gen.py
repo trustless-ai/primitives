@@ -95,7 +95,7 @@ for i,(id_,name,what,chain,addr) in enumerate(live_onchain):
 for p in recompute_primitives:
   entries.append({"id":f"recompute:{p}","name":p,"what":"recomputable primitive (conformance vectors).",
     "status":"SHIPPED","proof":{"type":"recompute-recipe","ref":f"trustless-ai/recompute-kit/conformance/{p}"},
-    "verify":"run the recompute-kit conformance suite for this recipe","verified_at":DATE})
+    "verify":"Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.","verified_at":DATE})
 for r,desc in repos:
   entries.append({"id":f"repo:{r}","name":r,"what":desc,
     "status":"LIVE" if r=="cross-reference-console" else "SHIPPED",
@@ -147,7 +147,7 @@ for e in grp("LIVE"):
   if e["proof"]["type"]=="surface":
     L.append(f"- **{e['name']}** — {e['what']} · {e['proof']['url']}")
 L.append(f"\n## 🟡 SHIPPED — recompute primitives ({len(recompute_primitives)}) · `recompute-kit/conformance/`")
-L.append("Each is a recomputable recipe with conformance vectors — run the suite to check any of them:")
+L.append("Each is a recomputable package with vectors. `SHIPPED` retains its meaning above; it does not promise a central-runner declaration or a passing run. Inspect the package specification and vectors. When `suite.json` is present, follow its declared checks and inspect the actual per-suite result; live exclusions can apply. Without `suite.json`, no central-runner verification is declared:")
 L.append("`" + "`, `".join(recompute_primitives) + "`")
 L.append("\n## 🟡 SHIPPED — tools & components")
 for e in grp("SHIPPED"):
@@ -169,12 +169,14 @@ L.append("- **contract** → `eth_getCode` on **≥2 distinct-provider RPCs**. T
          "may share upstreams, so agreement is corroboration bounded by that.* Corroboration is not re-derived "
          "consensus — full header verification (`eth_getProof` / light client) is the further leg the verify-layer carries.")
 L.append("- **repo / note** → the repository resolves (`gh api`); a transport error is `CANNOT_CHECK`, not a pass.")
-L.append("- **recompute-recipe** → the conformance package exists in `recompute-kit/conformance/`.")
+L.append("- **recompute-recipe** \u2192 one GitHub directory listing distinguishes `RUNNER_DECLARED` (`suite.json` file present) from `PACKAGE_PRESENT` (package present, no `suite.json`). Neither means a suite passed or was executed. Missing package \u2192 `STALE`; transport/API failure or unusable listing \u2192 `CANNOT_CHECK`. `uncovered.json` is not a checker dependency.")
 L.append("- **erc** → index-only here; verify at the ERC PR.")
-L.append("```\npython3 check.py   # ✅ PASS ❌ STALE 🟠 UNRESOLVED 🚫 CANNOT_CHECK ⚠️ SKIP 📄 INDEX\n"
+L.append("```\npython3 check.py   # PASS / RUNNER_DECLARED / PACKAGE_PRESENT / STALE / UNRESOLVED / CANNOT_CHECK / SKIP / INDEX\n"
          "                   # exit 1 = drift · exit 2 = unresolved/cannot-check (fail closed) · exit 0 = clean\n```")
 L.append("Required checks (contract/repo/recipe) fail closed; `SKIP` is only for genuinely non-required cases. "
          "Works keyless (two public RPCs corroborate); set `ALCHEMY_KEY` / `RPC_URL_*` to add a trusted one.")
+L.append("\nRecipe observations do not change the registry lifecycle status `SHIPPED`. Exit 0 means the required registry observations completed without drift; it is not a conformance verdict. `RUNNER_DECLARED` only establishes manifest-file presence, not manifest validity, executable availability, pin validity, runner scheduling or semantic correctness. `PACKAGE_PRESENT` establishes neither those facts nor code/vector correctness. Run conformance separately in recompute-kit and retain NOT RUN / live-skip outcomes.\n")
+L.append("Offline regression tests: `python3 -m unittest -v test_check.py`. They mock GitHub/RPC access and exercise the registry exit codes.")
 L.append(f"\n---\n{len(entries)} entries. Authority > index, always. CC0.")
 (D/"README.md").write_text("\n".join(L)+"\n")
 print("wrote primitives.json + README.md ·", len(entries), "entries")

@@ -111,7 +111,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/pq-key-binding-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -123,7 +123,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/pq-key-binding-v1"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -135,7 +135,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/pq-key-binding-v1-profile"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -147,7 +147,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/pq-recovery-classes-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -159,7 +159,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/captured-admission-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -171,7 +171,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/captured-admission-v0-review-profile"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -183,7 +183,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/captured-admission-v0-review-profile-deadline"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -195,7 +195,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/companion-envelope-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -207,7 +207,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/convention-hash-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -219,7 +219,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/provenance-anchor-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -231,7 +231,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/storage-root-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -243,7 +243,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/encode-json-utf8-lf-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -255,7 +255,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/erc-8309-envelope-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -267,7 +267,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/erc8275-win-rate-bps-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -279,7 +279,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/communication-chain-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -291,7 +291,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/chronicle-checkpoint-continuity-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -303,7 +303,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/crc-claim-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -315,7 +315,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/aggregate-budget-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -327,7 +327,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/dex-calldata-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -339,7 +339,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/ens-write-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -351,7 +351,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/id-write-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -363,7 +363,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/nft-fulfill-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -375,7 +375,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/deils-leg2-reveal-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -387,7 +387,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/tee-inference-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -399,7 +399,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/tee-inference-enclave-v0"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {
@@ -411,7 +411,7 @@
         "type": "recompute-recipe",
         "ref": "trustless-ai/recompute-kit/conformance/serializer-bindings"
       },
-      "verify": "run the recompute-kit conformance suite for this recipe",
+      "verify": "Inspect this package's specification and vectors. If suite.json exists, follow its declared checks through recompute-kit and inspect the per-suite result (live exclusions may apply); otherwise no central-runner verification is declared. Package/manifest presence is not a conformance PASS.",
       "verified_at": "2026-09-03"
     },
     {

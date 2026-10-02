@@ -10,6 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
+      - name: Offline registry boundary regressions
+        run: python3 -m unittest -v test_check.py
       # Authority checks: repos + conformance packages via gh (always run).
       # On-chain checks recompute via >=2 distinct-provider RPCs and must AGREE; if <2 answer they
       # fail closed as CANNOT_CHECK (non-zero exit), never a silent pass. Works keyless (public
